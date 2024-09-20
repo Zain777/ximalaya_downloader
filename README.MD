@@ -64,11 +64,12 @@ node xmd.js --help
 Usage: xmd [options]
 
 Options:
-  -a, --albumId <value>       albumId,必填
+  -a, --albumId <value>       专辑ID（albumId）列表,必填,自动连续下载
   -n, --concurrency <number>  并发数,默认10
   -s, --slow                  慢速模式
-  -t, --type                  登录类型,可选值pc、web,默认都登陆(需要扫码多次)
+  -t, --type <type>           登录类型,可选值pc、web,默认都登陆(需要扫码多次)
   -o, --output <value>        当前要保存的目录,默认为~/Downloads (default: "~/Downloads")
+  -q, --quality <number>      音质, 0普通、1高清、2超高, 默认超高
   -h, --help                  display help for command
 ```
 #### 配置文件相关参数介绍

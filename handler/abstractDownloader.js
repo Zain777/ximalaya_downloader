@@ -374,8 +374,8 @@ class AbstractDownloader {
      * @returns {Promise<{trackTitle, playUrlList}>}
      * @private
      */
-    async _getBaseInfo(trackId) {
-        const trackQualityLevel = 2
+    async _getBaseInfo(trackId, quality) {
+        const trackQualityLevel = quality != null ? quality : 2
         const url = `${config.baseUrl}/mobile-playpage/track/v3/baseInfo/${Date.now()}?device=${this.deviceType}&trackId=${trackId}&trackQualityLevel=${trackQualityLevel}`
         const referer = `${config.baseUrl}/album/${trackId}`
         const headers = buildHeaders(referer, await this._getCookies())
@@ -393,6 +393,10 @@ class AbstractDownloader {
         if (response.data.ret != 0) {
             log.error(`${this.deviceType}端喜马拉雅接口内部异常`, response.data)
             throw new Error("喜马拉雅内部异常")
+        }
+        if (response.data.trackInfo.playUrlList == null) {
+            log.error(`${this.deviceType}端喜马拉雅无可下载数据，检查会员是否过期`, response.data)
+            throw new CustomError(666, "无可下载数据，检查会员是否过期")
         }
         return {
             playUrlList: response.data.trackInfo.playUrlList,
@@ -474,10 +478,10 @@ class AbstractDownloader {
      * @param trackId
      * @returns {Promise<buffer, fileExtension>}
      */
-    async download(trackId) {
+    async download(trackId, quality) {
         let user = await this._getCurrentUser()
         await this._checkUser(user, true)
-        const baseInfo = await this._getBaseInfo(trackId)
+        const baseInfo = await this._getBaseInfo(trackId, quality)
         const e = this._playUrl(baseInfo.playUrlList)
         const url = this._decrypt(e.encodeText)
         const data = await this._getAudio(url)

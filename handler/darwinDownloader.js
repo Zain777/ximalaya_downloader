@@ -45,7 +45,7 @@ async function test() {
     }
     const album = await downloader.getAlbum(33476331)
     const trackPageResult = await downloader.getTracksList(33476331, 1, 1)
-    const data = await downloader.download(trackPageResult.tracks[0].trackId)
+    const data = await downloader.download(trackPageResult.tracks[0].trackId, 0)
     console.log(data)
 }
 
